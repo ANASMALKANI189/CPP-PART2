@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Alert
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -12,7 +13,19 @@ import { useRouter } from 'expo-router';
 export default function SignIn() {
   const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false); // Password visibility state
+  const [emailOrMobile, setEmailOrMobile] = useState('');
 
+  const handleSubmit = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email validation
+    const mobileRegex = /^\d{10}$/; // Matches exactly 10 digits
+
+    if (!emailRegex.test(emailOrMobile) && !mobileRegex.test(emailOrMobile)) {
+      Alert.alert('Validation Error', 'Please enter a valid email or 10-digit mobile number.');
+      return;
+    }
+
+    Alert.alert('Success', 'Input is valid!');
+  };
   return (
     <View style={styles.container}>
       {/* Back Arrow */}
@@ -31,11 +44,12 @@ export default function SignIn() {
       <Text style={styles.label}>Email or Mobile Number</Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter "
+        placeholder="Enter email or mobile number"
         placeholderTextColor="#A0A3BD"
-        keyboardType="email-address"
+        keyboardType="default" // Use 'default' to allow both text and numbers
+        value={emailOrMobile}
+        onChangeText={text => setEmailOrMobile(text)}
       />
-
       {/* Password Input */}
       <Text style={styles.label}>Password</Text>
       <View style={styles.passwordContainer}>
@@ -55,12 +69,12 @@ export default function SignIn() {
       </View>
 
       {/* Forget Password */}
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>router.push('/login/SetPassword')}>
         <Text style={styles.forgotPassword}>Forgot Password</Text>
       </TouchableOpacity>
 
       {/* Login Button */}
-      <TouchableOpacity style={styles.loginButton}>
+      <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
         <Text style={styles.loginButtonText}>Log In</Text>
       </TouchableOpacity>
 
