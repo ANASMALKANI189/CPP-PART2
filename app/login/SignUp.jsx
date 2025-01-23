@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
+  Alert
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -17,6 +18,22 @@ export default function SignUp() {
   const [passwordVisible, setPasswordVisible] = useState(false); // Password visibility state
   const [date, setDate] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
+  const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
+  const handleSubmit = () => {
+    // Regular expression for basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+    if (!email.trim()) {
+      Alert.alert('Validation Error', 'Email is required.');
+      return;
+    } else if (!emailRegex.test(email)) {
+      Alert.alert('Validation Error', 'Please enter a valid email.');
+      return;
+    }
+  
+    Alert.alert('Submitted Successfully', `Email: ${email}\nMobile: ${mobile || 'Not Provided'}`);
+  };
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -31,7 +48,7 @@ export default function SignUp() {
   return (
     <View style={styles.container1}>
       <TouchableOpacity
-        style={styles.backButton}
+        style={styles.backButton1}
         onPress={() => router.push('/login/SignIn')} // Navigate to the previous page or home
       >
         <FontAwesome name="arrow-left" size={24} color="#000" />
@@ -47,13 +64,26 @@ export default function SignUp() {
         keyboardType="text"
       />
 
-      <Text style={styles.label1}>Email</Text>
+<Text style={styles.label1}>Email</Text>
       <TextInput
         style={styles.input1}
         placeholder="example@example.com"
         placeholderTextColor="#A0A3BD"
-        keyboardType="default"
+        keyboardType="email-address"
+        value={email}
+        onChangeText={text => setEmail(text)}
       />
+
+      <Text style={styles.label1}>Mobile Number (Optional)</Text>
+      <TextInput
+        style={styles.input1}
+        placeholder="1234567890"
+        placeholderTextColor="#A0A3BD"
+        keyboardType="phone-pad"
+        value={mobile}
+        onChangeText={text => setMobile(text)}
+      />
+
 
       <Text style={styles.label1}>Password</Text>
       <View style={styles.passwordContainer1}>
@@ -90,7 +120,7 @@ export default function SignUp() {
         />
       )}
     </View>
-      <TouchableOpacity style={styles.loginButton1}>
+      <TouchableOpacity style={styles.loginButton1} onPress={handleSubmit}>
               <Text style={styles.loginButtonText1}>Sign Up</Text>
             </TouchableOpacity>
       <Text style={styles.orText1}>or sign up with</Text>
@@ -179,5 +209,8 @@ const styles = StyleSheet.create({
   signupLink1: {
     color: '#4285F4',
     fontWeight: 'bold',
+  },
+  backButton1: {
+    marginBottom: 20,
   }
 });
