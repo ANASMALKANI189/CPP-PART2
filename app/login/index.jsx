@@ -45,7 +45,7 @@ export default function LoginScreen() {
             }}>Log In</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style = {styles?.Button1}>
+        <TouchableOpacity style = {styles?.Button1} onPress={()=>router.push('/login/SignUp')}>
             <Text
             style={{
                 color:Colors.PRIMARY,
